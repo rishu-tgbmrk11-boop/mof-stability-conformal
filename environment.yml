@@ -17,3 +17,5 @@ dependencies:
   - pip:
       # NVIDIA RTX 4050 laptop GPU, driver supports CUDA 13.1: the default PyPI wheel is the cu130 build (verified: torch.cuda.is_available() = True)
       - torch==2.14.1
+      # renders figure PDFs to PNG for visual checks (figures/render_previews.py)
+      - pypdfium2==5.14.0
