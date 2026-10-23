@@ -52,5 +52,5 @@ notes/             # notes, audit results (stability_inventory.md), archive_week
 - [x] Phase 0: project reset, environment `mof-stability` (imports and GPU verified), optimof clone and CoRE MOF 2024 CSVs (checksums verified).
 - [x] Phase 1 (done; see `notes/stability_inventory.md`): **audit of the paper's ML** (`notes/stability_inventory.md`): inventory of the three stability tables, model summaries (algorithm, features, hyperparameters, split, metrics),
       retraining from the released data and comparison with the saved models, train/test leakage check, calibration and false-negative rates. Stop and report after this phase.
-- [ ] Phase 2: reproduce the three models cleanly with MOFid-group splits; compare with the paper.
+- [x] Phase 2 (done; see `notes/phase2.md`): group-aware splits (proxy groups: refcode family + DOI), honest retraining, per-stage and cascade conformal recall control.
 - [ ] Phase 3: conformal recall guarantee for the stacked filters; empirical coverage check on held-out groups.
