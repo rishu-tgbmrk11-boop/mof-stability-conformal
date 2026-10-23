@@ -28,6 +28,7 @@
   load them only with a restricted unpickler that allows scikit-learn / numpy / pandas / xgboost / torch names, and run Python as `python -I` so the working directory is not on the import path.
 - Only create or change the conda environment `mof-stability` under `~/miniforge3/envs/`. Do not modify other environments, `~/src` or any other project.
 - Write code in `src/` (importable, tested with pytest); notebooks only call it. Every script takes a config and writes outputs and a log to a run folder.
+- Run the tests with `pytest tests`, not bare `pytest`: `data/raw/` holds vendored optimof/Zeo++ test files that fail at collection.
 
 ## Tech stack
 - Environment: mamba from `~/miniforge3`, env `mof-stability`, Python 3.11, pinned in `environment.yml`.
@@ -53,4 +54,4 @@ notes/             # notes, audit results (stability_inventory.md), archive_week
 - [x] Phase 1 (done; see `notes/stability_inventory.md`): **audit of the paper's ML** (`notes/stability_inventory.md`): inventory of the three stability tables, model summaries (algorithm, features, hyperparameters, split, metrics),
       retraining from the released data and comparison with the saved models, train/test leakage check, calibration and false-negative rates. Stop and report after this phase.
 - [x] Phase 2 (done; see `notes/phase2.md`): group-aware splits (proxy groups: refcode family + DOI), honest retraining, per-stage and cascade conformal recall control.
-- [ ] Phase 3: conformal recall guarantee for the stacked filters; empirical coverage check on held-out groups.
+- [x] Phase 3: conformal recall guarantee for the stacked filters; empirical coverage check on held-out groups.
