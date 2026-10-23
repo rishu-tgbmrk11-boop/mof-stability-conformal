@@ -1,0 +1,48 @@
+== 1. two copies of each saved network: same weights?
+  thermal: model/thermal_model.pkl vs saved_models copy: weights identical = False; parameters 3,147,777; layer sizes [2048, 1024, 512, 256, 128, 64, 32, 1]
+  solvent: model/solvent_model.pkl vs saved_models copy: weights identical = False; parameters 262,657; layer sizes [512, 256, 128, 64, 32, 16, 1]
+  water RF: model/ vs saved_models/ copy identical bytes (checked earlier): True
+
+== 2. reproduce the splits (train_test_split(test_size=0.2, random_state=0)) and compare with the released test files
+  thermal: train 2505, test 627 (saved test file rows 627)
+     my test labels == saved test labels: True; my scaled test features vs saved: max |diff| 0
+     saved scaler mean_ matches TRAIN-only mean: max |diff| 0; matches ALL-data mean: max |diff| 636  (-> scaler fitted on training part only: True)
+  solvent: train 1743, test 436 (saved test file rows 436)
+     my test labels == saved test labels: True; my scaled test features vs saved: max |diff| 0
+     saved scaler mean_ matches TRAIN-only mean: max |diff| 0; matches ALL-data mean: max |diff| 405  (-> scaler fitted on training part only: True)
+  water: train 873, test 219
+     saved RF object's own test MOFs == my reproduced test MOFs (same order): True; same set: True
+     saved RF object's own train MOFs == my train MOFs: True
+     water test class counts (0-based): {0.0: 25, 1.0: 65, 2.0: 115, 3.0: 14}; repo docstring (25, 65, 115, 14); SI text (17, 68, 112, 22)
+     released water_rf_test_data.pkl shape (438, 160) (a concat of labels and features along axis 0 -> not usable as a test table); columns 160
+
+== 3. saved-model performance on the reproduced test sets
+  thermal (n=627): MAE 53.57, RMSE 81.30, R2 0.138   | SI: MAE 47, RMSE 67, R2 0.41 ; saved filename: 52mae
+  solvent (n=436): accuracy 0.7775, precision 0.8051, recall 0.8327, F1 0.8187, AUC 0.8299; TN/FP/FN/TP = 120/53/44/219
+     SI: accuracy 0.775, precision 0.817, recall 0.829, F1 0.823, AUC 0.826; TN/FP/FN/TP = 110/51/47/228 ; saved filename: 78acc
+  water RF (n=219): accuracy 0.6621, macro-OVR AUC 0.8400   | repo docstring 0.6621 / 0.8400 ; SI 0.671
+              precision    recall  f1-score   support
+
+         0.0      0.800     0.480     0.600        25
+         1.0      0.629     0.677     0.652        65
+         2.0      0.718     0.774     0.745       115
+         3.0      0.000     0.000     0.000        14
+
+    accuracy                          0.662       219
+   macro avg      0.537     0.483     0.499       219
+weighted avg      0.655     0.662     0.653       219
+
+  confusion matrix (rows=true 0..3, cols=pred 0..3):
+ [[12  5  8  0]
+ [ 2 44 16  3]
+ [ 1 18 89  7]
+ [ 0  3 11  0]]
+
+== 3b. the saved_models/ copies and the TRAIN-set performance of the released networks
+  thermal: {'test_mae': 53.5729, 'test_rmse': 81.295, 'test_r2': 0.1381, 'train_mae': 22.2554, 'train_r2': 0.8424}
+  thermal_saved: {'test_mae': 52.702, 'test_rmse': 74.4168, 'test_r2': 0.2778, 'train_mae': 27.4675, 'train_r2': 0.7916}
+  solvent: {'test_acc': 0.7775, 'test_auc': 0.8299, 'tn': 120.0, 'fp': 53.0, 'fn': 44.0, 'tp': 219.0, 'train_acc': 0.9656}
+  solvent_saved: {'test_acc': 0.7752, 'test_auc': 0.8313, 'tn': 123.0, 'fp': 50.0, 'fn': 48.0, 'tp': 215.0, 'train_acc': 0.965}
+
+== 4. hyperparameters of the saved random forest: {'n_estimators': 200, 'max_depth': None, 'min_samples_split': 2, 'min_samples_leaf': 1, 'bootstrap': False, 'max_features': 'sqrt', 'random_state': 0} | n features 159
+   SI Table S5: 250 trees, max depth 20, split threshold 8

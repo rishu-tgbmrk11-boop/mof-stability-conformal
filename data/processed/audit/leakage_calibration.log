@@ -1,0 +1,107 @@
+==================================================================================================== 
+A. LEAKAGE CHECKS (released random 80/20 split)
+====================================================================================================
+thermal: test MOFs sharing a 4-letter refcode family with >=1 training MOF: 43.7%; 5-letter family: 7.5%
+solvent: test MOFs sharing a 4-letter refcode family with >=1 training MOF: 50.2%; 5-letter family: 9.6%; sharing a DOI with a training MOF: 60.6%
+water: test MOFs sharing a 4-letter refcode family with >=1 training MOF: 58.9%; 5-letter family: 14.2%
+
+-- feature-space nearest neighbours: test MOF -> closest training MOF (standardised features, Euclidean)
+thermal: nearest-train distance median 2.76 | nearest train MOF from a DIFFERENT 4-letter family: median 3.30 (1.19x farther) | the single closest training MOF is in the same family for 22.2% of test MOFs
+solvent: nearest-train distance median 2.82 | nearest train MOF from a DIFFERENT 4-letter family: median 3.78 (1.34x farther) | the single closest training MOF is in the same family for 29.8% of test MOFs
+water: nearest-train distance median 3.42 | nearest train MOF from a DIFFERENT 4-letter family: median 4.15 (1.21x farther) | the single closest training MOF is in the same family for 23.7% of test MOFs
+
+-- does the saved model do better on test MOFs that have a close training neighbour? (error by nearest-training-distance tertile)
+thermal MAE (deg C):
+                 mean  count
+q                           
+closest third   30.32    209
+middle third    51.34    209
+farthest third  79.06    209
+solvent accuracy:
+                 mean  count
+q                           
+closest third   0.973    146
+middle third    0.703    145
+farthest third  0.655    145
+water accuracy:
+                 mean  count
+q                           
+closest third   0.795     73
+middle third    0.616     73
+farthest third  0.575     73
+
+-- random vs group-aware 5-fold CV with the same fast model (random forest), all labelled MOFs of each table
+thermal  random KFold                       R2 / MAE: 0.482 / 44.1
+thermal  group by 4-letter refcode family   R2 / MAE: 0.374 / 50.1
+solvent  random KFold                       accuracy: 0.793
+solvent  group by 4-letter refcode family   accuracy: 0.716
+water    random KFold                       accuracy: 0.662
+water    group by 4-letter refcode family   accuracy: 0.558
+solvent  group by DOI                       accuracy: 0.620
+
+-- which MOFs are in the TEST set of one task but the TRAIN set of another (matters for any stacked evaluation)
+  thermal test & water train: 50   |   water test & thermal train: 43   |   test in both: 12
+  solvent test & thermal train: 189   |   thermal test & solvent train: 189   |   test in both: 52
+  solvent test & water train: 12   |   water test & solvent train: 25   |   test in both: 6
+  MOFs labelled in all three tables: 92; of these in the TEST set of: thermal 27, solvent 13, water 22; in the test set of ALL THREE: 1
+
+====================================================================================================
+B. CALIBRATION AND FALSE-NEGATIVE RATES of the released models on their own test sets
+====================================================================================================
+
+SOLVENT (binary, n=436): Brier 0.1902, log-loss 1.4104, ECE(10 bins) 0.1877, AUC 0.8299
+  reliability (bin, n, mean predicted p, observed fraction stable):
+    0.0-0.1   n=134  p=0.007  observed=0.179
+    0.1-0.2   n=  8  p=0.155  observed=0.500
+    0.2-0.3   n=  7  p=0.255  observed=0.857
+    0.3-0.4   n=  4  p=0.334  observed=0.500
+    0.4-0.5   n= 11  p=0.464  observed=0.727
+    0.5-0.6   n=  7  p=0.548  observed=0.714
+    0.6-0.7   n=  2  p=0.653  observed=0.000
+    0.7-0.8   n=  7  p=0.746  observed=0.857
+    0.8-0.9   n=  9  p=0.856  observed=0.556
+    0.9-1.0   n=247  p=0.993  observed=0.822
+  paper screening threshold is > 0.9: truly stable 263 of 436
+    pass if score >= 0.5:  recall 0.833  FNR 0.167  precision 0.805  MOFs passing 62.4%
+    pass if score >= 0.7:  recall 0.814  FNR 0.186  precision 0.814  MOFs passing 60.3%
+    pass if score >= 0.9:  recall 0.772  FNR 0.228  precision 0.822  MOFs passing 56.7%
+    threshold for >=95% recall on this test set: 0.006 -> recall 0.951, MOFs passing 75.2%, precision 0.762
+
+WATER (stable = class 2 or 3, n=219): Brier 0.1561, ECE(10 bins) 0.0791, AUC 0.8450
+  reliability of P(stable) = P(class 2)+P(class 3):
+    0.0-0.1   n= 16  p=0.044  observed=0.000
+    0.1-0.2   n= 14  p=0.134  observed=0.143
+    0.2-0.3   n= 15  p=0.254  observed=0.267
+    0.3-0.4   n= 16  p=0.352  observed=0.125
+    0.4-0.5   n= 23  p=0.458  observed=0.565
+    0.5-0.6   n= 27  p=0.547  observed=0.667
+    0.6-0.7   n= 25  p=0.632  observed=0.720
+    0.7-0.8   n= 20  p=0.751  observed=0.700
+    0.8-0.9   n= 25  p=0.844  observed=0.920
+    0.9-1.0   n= 38  p=0.969  observed=0.921
+  paper rule (predicted class in {2,3}): recall 0.829, FNR 0.171, precision 0.799, MOFs passing 61.2%
+  P(stable) thresholds: truly stable 129 of 219
+    pass if score >= 0.3:  recall 0.953  FNR 0.047  precision 0.703  MOFs passing 79.9%
+    pass if score >= 0.5:  recall 0.837  FNR 0.163  precision 0.800  MOFs passing 61.6%
+    pass if score >= 0.7:  recall 0.558  FNR 0.442  precision 0.867  MOFs passing 37.9%
+    threshold for >=95% recall on this test set: 0.310 -> recall 0.953, MOFs passing 79.0%, precision 0.711
+
+THERMAL (stable = decomposition T >= 350 C, n=627): calibration of the regression: truth = 0.575 * prediction + 145.4  (a calibrated model has slope 1, intercept 0); mean residual -10.56 C
+  by prediction decile:
+                     n   mean_pred  mean_truth  frac_stable
+bin                                                        
+(106.826, 261.124]  63  227.029999      255.67         0.06
+(261.124, 295.409]  63  279.880005      286.86         0.19
+(295.409, 320.178]  62  309.380005      313.69         0.27
+(320.178, 339.161]  63  329.250000      329.90         0.37
+(339.161, 360.72]   63  349.179993      357.97         0.52
+(360.72, 384.684]   62  371.480011      365.38         0.71
+(384.684, 405.011]  63  394.880005      381.05         0.75
+(405.011, 428.726]  62  417.269989      410.04         0.92
+(428.726, 475.197]  63  449.760010      420.37         0.86
+(475.197, 830.707]  63  538.419983      440.39         0.84
+  predicted T thresholds (deg C); paper screens at >= 350: truly stable 344 of 627
+    pass if score >= 300:  recall 0.948  FNR 0.052  precision 0.663  MOFs passing 78.5%
+    pass if score >= 330:  recall 0.872  FNR 0.128  precision 0.737  MOFs passing 64.9%
+    pass if score >= 350:  recall 0.791  FNR 0.209  precision 0.800  MOFs passing 54.2%
+    threshold for >=95% recall on this test set: 298.964 -> recall 0.951, MOFs passing 78.8%, precision 0.662

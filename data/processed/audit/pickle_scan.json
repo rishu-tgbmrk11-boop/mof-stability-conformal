@@ -1,0 +1,226 @@
+{
+ "data/all_in_one.pkl": {
+  "bytes": 6953357,
+  "format": "pickle/joblib",
+  "loaded_type": "pandas.DataFrame",
+  "blocked": null,
+  "n_globals_requested": 12,
+  "modules_requested": [
+   "_codecs",
+   "builtins",
+   "joblib",
+   "numpy",
+   "pandas"
+  ]
+ },
+ "data/all_in_one_cols.pkl": {
+  "bytes": 3624,
+  "format": "pickle/joblib",
+  "loaded_type": "pandas.Index",
+  "blocked": null,
+  "n_globals_requested": 7,
+  "modules_requested": [
+   "_codecs",
+   "joblib",
+   "numpy",
+   "pandas"
+  ]
+ },
+ "data/mof_map.pkl": {
+  "bytes": 377627,
+  "format": "pickle/joblib",
+  "loaded_type": "builtins.tuple",
+  "blocked": null,
+  "n_globals_requested": 18,
+  "modules_requested": [
+   "_codecs",
+   "builtins",
+   "joblib",
+   "numpy",
+   "pandas",
+   "sklearn"
+  ]
+ },
+ "data/solvent/solvent_split_data.pkl": {
+  "bytes": 3019760,
+  "format": "pickle/joblib",
+  "loaded_type": "pandas.DataFrame",
+  "blocked": null,
+  "n_globals_requested": 11,
+  "modules_requested": [
+   "_codecs",
+   "builtins",
+   "joblib",
+   "numpy",
+   "pandas"
+  ]
+ },
+ "data/solvent/solvent_test_data.pkl": {
+  "bytes": 599591,
+  "format": "pickle/joblib",
+  "loaded_type": "pandas.DataFrame",
+  "blocked": null,
+  "n_globals_requested": 11,
+  "modules_requested": [
+   "builtins",
+   "numpy",
+   "pandas"
+  ]
+ },
+ "data/thermal/thermal_split_data.pkl": {
+  "bytes": 4338710,
+  "format": "pickle/joblib",
+  "loaded_type": "pandas.DataFrame",
+  "blocked": null,
+  "n_globals_requested": 11,
+  "modules_requested": [
+   "_codecs",
+   "builtins",
+   "joblib",
+   "numpy",
+   "pandas"
+  ]
+ },
+ "data/thermal/thermal_test_data.pkl": {
+  "bytes": 860879,
+  "format": "pickle/joblib",
+  "loaded_type": "pandas.DataFrame",
+  "blocked": null,
+  "n_globals_requested": 11,
+  "modules_requested": [
+   "builtins",
+   "numpy",
+   "pandas"
+  ]
+ },
+ "data/water_and_haz/water_rf_test_data.pkl": {
+  "bytes": 566736,
+  "format": "pickle/joblib",
+  "loaded_type": "pandas.DataFrame",
+  "blocked": null,
+  "n_globals_requested": 10,
+  "modules_requested": [
+   "builtins",
+   "numpy",
+   "pandas"
+  ]
+ },
+ "data/water_and_haz/water_split_data.pkl": {
+  "bytes": 1419447,
+  "format": "pickle/joblib",
+  "loaded_type": "pandas.DataFrame",
+  "blocked": null,
+  "n_globals_requested": 11,
+  "modules_requested": [
+   "_codecs",
+   "builtins",
+   "joblib",
+   "numpy",
+   "pandas"
+  ]
+ },
+ "model/preprocess/solvent_scalar.pkl": {
+  "bytes": 8055,
+  "format": "pickle/joblib",
+  "loaded_type": "sklearn.preprocessing._data.StandardScaler",
+  "blocked": null,
+  "n_globals_requested": 7,
+  "modules_requested": [
+   "_codecs",
+   "joblib",
+   "numpy",
+   "sklearn"
+  ]
+ },
+ "model/preprocess/thermal_scalar.pkl": {
+  "bytes": 8055,
+  "format": "pickle/joblib",
+  "loaded_type": "sklearn.preprocessing._data.StandardScaler",
+  "blocked": null,
+  "n_globals_requested": 7,
+  "modules_requested": [
+   "_codecs",
+   "joblib",
+   "numpy",
+   "sklearn"
+  ]
+ },
+ "model/saved_models/solvent_model_78acc.pkl": {
+  "bytes": 1058136,
+  "format": "torch-zip",
+  "globals_static": [
+   "__builtin__.set",
+   "__main__.SolventModel",
+   "collections.OrderedDict",
+   "torch.FloatStorage",
+   "torch._utils._rebuild_parameter",
+   "torch._utils._rebuild_tensor_v2",
+   "torch.nn.modules.container.ModuleList",
+   "torch.nn.modules.dropout.Dropout",
+   "torch.nn.modules.linear.Linear"
+  ]
+ },
+ "model/saved_models/thermal_model_52mae.pkl": {
+  "bytes": 12599134,
+  "format": "torch-zip",
+  "globals_static": [
+   "__builtin__.set",
+   "__main__.ThermalModel",
+   "collections.OrderedDict",
+   "torch.FloatStorage",
+   "torch._utils._rebuild_parameter",
+   "torch._utils._rebuild_tensor_v2",
+   "torch.nn.modules.container.ModuleList",
+   "torch.nn.modules.linear.Linear"
+  ]
+ },
+ "model/saved_models/water_rf_model_66acc.pkl": {
+  "bytes": 11119643,
+  "format": "pickle/joblib",
+  "blocked": "blocked global __main__.WaterStabilityRF",
+  "loaded_type": null,
+  "n_globals_requested": 1,
+  "modules_requested": [
+   "__main__"
+  ]
+ },
+ "model/solvent_model.pkl": {
+  "bytes": 1058136,
+  "format": "torch-zip",
+  "globals_static": [
+   "__builtin__.set",
+   "__main__.SolventModel",
+   "collections.OrderedDict",
+   "torch.FloatStorage",
+   "torch._utils._rebuild_parameter",
+   "torch._utils._rebuild_tensor_v2",
+   "torch.nn.modules.container.ModuleList",
+   "torch.nn.modules.dropout.Dropout",
+   "torch.nn.modules.linear.Linear"
+  ]
+ },
+ "model/thermal_model.pkl": {
+  "bytes": 12599134,
+  "format": "torch-zip",
+  "globals_static": [
+   "__builtin__.set",
+   "__main__.ThermalModel",
+   "collections.OrderedDict",
+   "torch.FloatStorage",
+   "torch._utils._rebuild_parameter",
+   "torch._utils._rebuild_tensor_v2",
+   "torch.nn.modules.container.ModuleList",
+   "torch.nn.modules.linear.Linear"
+  ]
+ },
+ "model/water_rf_model.pkl": {
+  "bytes": 11119643,
+  "format": "pickle/joblib",
+  "blocked": "blocked global __main__.WaterStabilityRF",
+  "loaded_type": null,
+  "n_globals_requested": 1,
+  "modules_requested": [
+   "__main__"
+  ]
+ }
+}

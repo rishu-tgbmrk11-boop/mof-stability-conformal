@@ -1,0 +1,48 @@
+{
+ "csv_thermal": {
+  "rows": 3132,
+  "cols": 196,
+  "nan_cells": 3132,
+  "nan_cols": [
+   "0"
+  ]
+ },
+ "csv_solvent": {
+  "rows": 2179,
+  "cols": 197,
+  "nan_cells": 2179,
+  "nan_cols": [
+   "0"
+  ]
+ },
+ "csv_water": {
+  "rows": 1092,
+  "cols": 165,
+  "nan_cells": 0,
+  "nan_cols": []
+ },
+ "split_thermal": {
+  "rows": 3132,
+  "features": 170
+ },
+ "split_solvent": {
+  "rows": 2179,
+  "features": 170
+ },
+ "split_water": {
+  "rows": 1092,
+  "features": 159
+ },
+ "drop20_nonconstant": [],
+ "overlap": {
+  "thermal": 3132,
+  "solvent": 2179,
+  "water": 1092,
+  "ts": 1163,
+  "tw": 244,
+  "sw": 125,
+  "all3": 92,
+  "union": 4963,
+  "all_in_one_rows": 4963
+ }
+}

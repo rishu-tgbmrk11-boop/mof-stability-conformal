@@ -1,0 +1,78 @@
+{
+ "thermal_copies_identical": false,
+ "solvent_copies_identical": false,
+ "thermal_split_reproduced": true,
+ "thermal_scaler_train_only": true,
+ "solvent_split_reproduced": true,
+ "solvent_scaler_train_only": true,
+ "water_split_reproduced": true,
+ "water_test_class_counts": {
+  "0": 25,
+  "1": 65,
+  "2": 115,
+  "3": 14
+ },
+ "thermal": {
+  "n": 627,
+  "mae": 53.57288960669355,
+  "rmse": 81.29504389850875,
+  "r2": 0.13813724296860286
+ },
+ "solvent": {
+  "n": 436,
+  "acc": 0.7775229357798165,
+  "prec": 0.8051470588235294,
+  "rec": 0.8326996197718631,
+  "f1": 0.8186915887850468,
+  "auc": 0.829908349634058,
+  "tn": 120,
+  "fp": 53,
+  "fn": 44,
+  "tp": 219
+ },
+ "water": {
+  "n": 219,
+  "acc": 0.6621004566210046,
+  "auc": 0.8399805487242148
+ },
+ "thermal_full": {
+  "test_mae": 53.57288960669355,
+  "test_rmse": 81.29504389850875,
+  "test_r2": 0.13813724296860286,
+  "train_mae": 22.255391159708886,
+  "train_r2": 0.842440170723165
+ },
+ "thermal_saved_full": {
+  "test_mae": 52.702012689386905,
+  "test_rmse": 74.41680082894132,
+  "test_r2": 0.2778091759497864,
+  "train_mae": 27.46748843404053,
+  "train_r2": 0.7915603003648403
+ },
+ "solvent_full": {
+  "test_acc": 0.7775229357798165,
+  "test_auc": 0.829908349634058,
+  "tn": 120,
+  "fp": 53,
+  "fn": 44,
+  "tp": 219,
+  "train_acc": 0.9655765920826161
+ },
+ "solvent_saved_full": {
+  "test_acc": 0.7752293577981652,
+  "test_auc": 0.8312820061979384,
+  "tn": 123,
+  "fp": 50,
+  "fn": 48,
+  "tp": 215,
+  "train_acc": 0.9650028686173264
+ },
+ "rf_params": {
+  "n_estimators": 200,
+  "max_depth": null,
+  "min_samples_split": 2,
+  "min_samples_leaf": 1,
+  "bootstrap": false,
+  "max_features": "sqrt"
+ }
+}

@@ -1,0 +1,112 @@
+{
+ "solvent_vs_thermal": {
+  "shared": 1163,
+  "shared_cols": 190,
+  "mofs_with_any_difference": 17,
+  "cols_that_differ": 148,
+  "geometry_columns_identical": true
+ },
+ "water_vs_thermal": {
+  "shared": 244,
+  "shared_cols": 159,
+  "mofs_with_any_difference": 243,
+  "median_rel_diff": {
+   "VPOV": 0.16089334644932246,
+   "GPOV": 0.1608933462840118,
+   "VSA": 0.5425932454007543,
+   "GSA": 0.5426013970239909,
+   "POAV_vol_frac": 0.1250816402675276,
+   "Di": 0.0,
+   "Df": 0.0
+  },
+  "frac_differ": {
+   "VPOV": 0.9959016393442623,
+   "GPOV": 0.9959016393442623,
+   "VSA": 0.9098360655737705,
+   "GSA": 0.9098360655737705,
+   "POAV_vol_frac": 0.9098360655737705
+  }
+ },
+ "water_vs_solvent": {
+  "shared": 125,
+  "shared_cols": 159,
+  "mofs_with_any_difference": 125,
+  "median_rel_diff": {
+   "VPOV": 0.2292468389212245,
+   "GPOV": 0.2292468396763404,
+   "VSA": 0.5477985195448687,
+   "GSA": 0.5478039235236928,
+   "POAV_vol_frac": 0.1384525887139662,
+   "Di": 0.0,
+   "Df": 0.0
+  },
+  "frac_differ": {
+   "VPOV": 1.0,
+   "GPOV": 1.0,
+   "VSA": 0.84,
+   "GSA": 0.84,
+   "POAV_vol_frac": 0.84
+  }
+ },
+ "rows_using_other_table_features": {
+  "solvent": 1163,
+  "water": 277,
+  "water_total": 1092,
+  "solvent_total": 2179
+ },
+ "solvent_thermal_RAC_rows_differ": 17,
+ "solvent_thermal_RAC_example": {
+  "refcode": "YIZGEV",
+  "f-Z-3-all_solvent_csv": 2752.0,
+  "f-Z-3-all_thermal_csv": 125952.0
+ },
+ "doi": {
+  "n_dois": 1174,
+  "n_mofs": 2179,
+  "median_group": 1,
+  "max_group": 35,
+  "frac_in_groups_ge2": 0.6544286369894446
+ },
+ "families": {
+  "thermal_4": {
+   "n_families": 2161,
+   "frac_sharing": 0.5044699872286079
+  },
+  "thermal_5": {
+   "n_families": 2976,
+   "frac_sharing": 0.0772669220945083
+  },
+  "solvent_4": {
+   "n_families": 1437,
+   "frac_sharing": 0.5245525470399266
+  },
+  "solvent_5": {
+   "n_families": 2026,
+   "frac_sharing": 0.09729233593391463
+  },
+  "water_4": {
+   "n_families": 590,
+   "frac_sharing": 0.6758241758241759
+  },
+  "water_5": {
+   "n_families": 992,
+   "frac_sharing": 0.12179487179487179
+  }
+ },
+ "class_balance": {
+  "solvent_stable": 1296,
+  "solvent_unstable": 883,
+  "solvent_majority_fraction": 0.5947682423129876,
+  "water_counts": {
+   "1": 89,
+   "2": 350,
+   "3": 555,
+   "4": 98
+  },
+  "water_majority_fraction": 0.5082417582417582,
+  "thermal_frac_ge_350": 0.5399106002554278,
+  "thermal_n_ge_350": 1691,
+  "thermal_min": 35.01679328,
+  "thermal_max": 654.3239796
+ }
+}

@@ -1,0 +1,16 @@
+
+##### thermal: train 2254 / val 251 / test 627  (device cuda)
+  [released_recipe] mean over seeds [0, 1, 2, 3, 4]: {'test_mae': np.float64(54.44), 'test_rmse': np.float64(79.36), 'test_r2': np.float64(0.178), 'train_r2': np.float64(0.839), 'train_mae': np.float64(22.695)} | sd: {'test_mae': np.float64(0.49), 'test_rmse': np.float64(1.81), 'test_r2': np.float64(0.037)} | epochs_run [428, 336, 451, 390, 447] best_epoch [327, 235, 350, 289, 346] | restore was a no-op in 5 of 5
+  [released_recipe+fixed_restore] mean over seeds [0, 1, 2, 3, 4]: {'test_mae': np.float64(54.561), 'test_rmse': np.float64(76.995), 'test_r2': np.float64(0.227), 'train_r2': np.float64(0.739), 'train_mae': np.float64(31.736)} | sd: {'test_mae': np.float64(0.808), 'test_rmse': np.float64(0.501), 'test_r2': np.float64(0.01)} | epochs_run [381, 336, 451, 390, 447] best_epoch [280, 235, 350, 289, 346] | restore was a no-op in 0 of 5
+  [SI_TableS5] mean over seeds [0, 1, 2, 3, 4]: {'test_mae': np.float64(58.106), 'test_rmse': np.float64(75.664), 'test_r2': np.float64(0.253), 'train_r2': np.float64(0.608), 'train_mae': np.float64(43.256)} | sd: {'test_mae': np.float64(1.376), 'test_rmse': np.float64(1.189), 'test_r2': np.float64(0.024)} | epochs_run [100, 100, 100, 100, 100] best_epoch [74, 94, 81, 89, 73] | restore was a no-op in 5 of 5
+
+##### solvent: train 1568 / val 175 / test 436  (device cuda)
+  [released_recipe] mean over seeds [0, 1, 2, 3, 4]: {'test_acc': np.float64(0.763), 'test_auc': np.float64(0.82), 'train_acc': np.float64(0.964)} | sd: {'test_acc': np.float64(0.009), 'test_auc': np.float64(0.008)} | epochs_run [232, 222, 230, 224, 223] best_epoch [31, 21, 29, 23, 22] | restore was a no-op in 5 of 5
+  [released_recipe+fixed_restore] mean over seeds [0, 1, 2, 3, 4]: {'test_acc': np.float64(0.739), 'test_auc': np.float64(0.762), 'train_acc': np.float64(0.809)} | sd: {'test_acc': np.float64(0.008), 'test_auc': np.float64(0.021)} | epochs_run [232, 222, 230, 224, 223] best_epoch [31, 21, 29, 23, 22] | restore was a no-op in 0 of 5
+  [SI_TableS5] mean over seeds [0, 1, 2, 3, 4]: {'test_acc': np.float64(0.755), 'test_auc': np.float64(0.809), 'train_acc': np.float64(0.954)} | sd: {'test_acc': np.float64(0.016), 'test_auc': np.float64(0.008)} | epochs_run [100, 100, 100, 100, 100] best_epoch [37, 27, 42, 30, 50] | restore was a no-op in 5 of 5
+
+##### water: train 873, test 219
+  RF re-grid: {'best_params': {'bootstrap': False, 'max_depth': None, 'min_samples_leaf': 1, 'min_samples_split': 2, 'n_estimators': 200}, 'cv_accuracy': np.float64(0.6700098522167488), 'test_acc': 0.6621004566210046, 'test_auc': 0.8399805487242148, 'secs': 204}
+  RF with SI Table S5 settings (250 trees, depth 20, min_samples_split 8): {'test_acc': 0.639269406392694, 'test_auc': 0.8295345966717083}
+  XGB re-grid: {'best_params': {'colsample_bytree': 1.0, 'learning_rate': 0.1, 'max_depth': 7, 'n_estimators': 200, 'subsample': 0.8}, 'cv_accuracy': np.float64(0.6780558292282429), 'test_acc': 0.6894977168949772, 'test_auc': 0.8450575887827448, 'secs': 1343} | repo docstring: acc 0.6758, AUC 0.8492
+DONE

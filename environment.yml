@@ -1,0 +1,19 @@
+name: mof-stability
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11.17
+  - scikit-learn=1.9.1
+  - xgboost=3.4.2
+  - pandas=3.0.6
+  - pyarrow=25.0.0
+  - pymatgen=2026.9.24
+  - ase=3.29.0
+  - mapie=1.6.0
+  - numpy=2.4.6
+  - scipy=1.17.1
+  - pytest=9.1.1
+  - pip
+  - pip:
+      # NVIDIA RTX 4050 laptop GPU, driver supports CUDA 13.1: the default PyPI wheel is the cu130 build (verified: torch.cuda.is_available() = True)
+      - torch==2.14.1
