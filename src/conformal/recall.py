@@ -5,8 +5,9 @@ If a new stable MOF's score is exchangeable with the calibration stable scores, 
 E[recall] >= 1 - alpha (the expectation is over the draw of the calibration set; ties only make the rule more conservative).
 If k = 0 no filtering is possible at that alpha (t = -inf: keep everything).
 
-Exchangeability holds at the level of the units that were split: here whole GROUPS were assigned to calibration or test, so the guarantee is
-marginal over random assignments of groups, not conditional on one assignment."""
+The proof needs exchangeable POINTS: with within-group dependence the mean recall can fall slightly below 1 - alpha (simulation, notes/review.md M3), and
+under a shift between calibration and deployment MOFs it can fall further (notes/phase5.md section 3). The guarantee is marginal over random assignments,
+not conditional on one assignment."""
 from __future__ import annotations
 
 from typing import Dict, Iterable, List, Optional, Sequence

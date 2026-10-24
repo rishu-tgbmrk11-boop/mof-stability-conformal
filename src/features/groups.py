@@ -95,3 +95,18 @@ def size_summary(groups: pd.DataFrame) -> pd.DataFrame:
         m = (sz >= lo) & (sz <= hi)
         rows.append(dict(size=f"{lo}" if lo == hi else (f"{lo}-{hi}" if hi < 10 ** 9 else f">={lo}"), groups=int(m.sum()), mofs=int(sz[m].sum())))
     return pd.DataFrame(rows)
+
+
+def random_group_assign(groups: pd.DataFrame, fractions: Dict[str, float], seed: int = 0) -> pd.Series:
+    """Random GROUP-level split: groups are shuffled (all of them, including the largest) and cut where the cumulative MOF count reaches each split's share.
+    Unlike `assign_groups` (deterministic apart from ties, designed to hit the fractions closely), this explores the split-to-split variability; the realised
+    fractions are only approximate when a large group straddles a cut."""
+    assert abs(sum(fractions.values()) - 1) < 1e-9
+    rng = np.random.RandomState(seed)
+    sizes = groups.drop_duplicates("group_id").set_index("group_id")["group_size"]
+    perm = rng.permutation(sizes.index.values)
+    cum = np.cumsum(sizes.loc[perm].values) / sizes.sum()
+    edges = np.cumsum(list(fractions.values()))
+    labels = list(fractions)
+    where = {g: labels[min(int(np.searchsorted(edges, c - 1e-12)), len(labels) - 1)] for g, c in zip(perm, cum)}
+    return groups["group_id"].map(where).rename("split")

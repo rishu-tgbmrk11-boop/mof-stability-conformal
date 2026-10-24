@@ -141,7 +141,7 @@ Test recall differs between the two columns because each is a single calibration
 | water | 0.10 | 0.90 | 0.903 | 57.2% | 0.846 | 0.932 | 84.0% | 0.891 | 54.8% / 78.8% |
 | water | 0.20 | 0.80 | 0.802 | 51.0% | 0.728 | 0.846 | 80.6% | 0.771 | 50.8% / 76.6% |
 
-**The PAC (training-conditional) guarantee is NOT verified.** The fraction of partitions reaching the target is 77.6%-91.8% across cells; the nominal value is at least 90%, and some cells are below it. This check is itself noisy (finite test sets with few positives; the partitions overlap, so the 500 repetitions are not independent; and groups introduce dependence that violates the i.i.d. assumption behind the Beta argument). Only the marginal guarantee (expected recall >= 1 - alpha) is supported by the numbers, and for that the mean realised recall is within 0.003 of the target in every cell.
+**The PAC (training-conditional) guarantee is NOT verified.** The fraction of partitions reaching the target is 77.6%-91.8% across cells; the nominal value is at least 90%, and some cells are below it. This check cannot reach 90% even for a valid rule: in an iid simulation with the real stage sizes the finite-test measure reaches the target in only 82.7-83.9% of calibration draws while the population-level rate is 89.4-91.7% (`notes/review.md` M4). It is also noisy (finite test sets with few positives; the partitions overlap, so the 500 repetitions are not independent; and groups introduce dependence that violates the i.i.d. assumption behind the Beta argument). Only the marginal guarantee (expected recall >= 1 - alpha) is supported by the numbers, and for that the mean realised recall is within 0.003 of the target in every cell.
 
 ## 4. Cascade with the Phase 3 models (union bound, 92 labelled MOFs)
 
@@ -170,14 +170,14 @@ Same design as Phase 2 section 4 (group cross-fitting, K = 5, 5 repetitions; 92 
 | paper's fixed rules | | | 0, 0, 1, 0, 0 | 0.012 (0.071) | 0.037 (0.035) | 0.043 (0.027) | |
 
 **Honest reading.**
-- With the union bound, mean recall on the 17 all-stable MOFs is 0.976, 0.976, 0.918, 0.835 for targets 0.95, 0.90, 0.80, 0.70. As in Phase 2 the 95% intervals are wide because there are only 17 positives: the data are consistent with the guarantee but cannot confirm it.
+- With the union bound, mean recall on the 17 all-stable MOFs is 0.976, 0.976, 0.918, 0.835 for targets 0.95, 0.90, 0.80, 0.70. As in Phase 2 the 95% intervals are wide because there are only 17 positives: the data are consistent with recall >= 1 - alpha but cannot confirm it, and that guarantee is not proved for the all-stable population (`notes/phase2.md` section 4).
 - Kept fraction of the cascade (union bound), Phase 3 vs baseline: target 0.95: 0.922 vs 0.922; target 0.90: 0.841 vs 0.857; target 0.80: 0.650 vs 0.780; target 0.70: 0.570 vs 0.698. The kept fraction is identical at target 0.95 and lower with the Phase 3 models at the lower targets. At the matching recall levels the cascade recall on the 17 positives is higher at targets 0.95 and 0.90 and slightly lower at 0.80 and 0.70, so these are not like-for-like comparisons, and with 17 positives the differences are within the noise (repetitions share the same MOFs).
 - The larger, more reliable comparison is the per-stage out-of-fold table above (thousands of MOFs): at each alpha the thermal stage keeps fewer MOFs (e.g. alpha 0.10: 0.711 vs 0.797) at a slightly lower realised recall (0.889 vs 0.906), the solvent stage keeps slightly fewer, and the water stage is unchanged. I did not run a significance test on these differences or a per-stage attribution of the cascade change.
 
 ## 5. Limitations
 
 - Proxy groups, not MOFid groups (see Phase 2). Labels are the released labels.
-- The only clear gain is for the thermal stage; solvent and water are essentially unchanged in group-aware discrimination, which suggests the limit is the features/labels rather than the model class. Untried: graph neural networks on structures, richer descriptors, and an external validation set.
+- The only clear gain is for the thermal stage; solvent and water are essentially unchanged in group-aware discrimination, which is consistent with the limit being the features/labels rather than the model class, but this was not tested (three tree families and the released networks on one split; no graph networks, richer descriptors or external set). Untried: graph neural networks on structures, richer descriptors, and an external validation set.
 - Intervals are from 1,000 group-bootstrap resamples on a single split of 589 / 425 / 232 test MOFs; a different group split could give different numbers.
-- The PAC variant is unverified (section 3). The cascade rests on 17 positives.
+- The PAC variant is unverified (section 3). The cascade rests on 17 positives (a count that depends on the cut-offs, `notes/phase5.md` section 4).
 - Candidate set and grid were chosen by me before running and are small; I did not tune hyperparameters beyond that grid.

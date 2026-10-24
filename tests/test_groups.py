@@ -45,3 +45,15 @@ def test_size_summary_totals():
     g = build_groups(names, doi)
     t = size_summary(g)
     assert t["mofs"].sum() == len(names) and t["groups"].sum() == g["group_id"].nunique()
+
+
+def test_random_group_assign_keeps_groups_whole_and_varies_with_seed():
+    from src.features.groups import build_groups, random_group_assign
+    names = [f"AB{c}{i}" for c in "CDEFGH" for i in range(7)] + [f"Z{i}XY" for i in range(30)]
+    g = build_groups(names)
+    a, b = random_group_assign(g, {"train": 0.6, "cal": 0.2, "test": 0.2}, seed=1), random_group_assign(g, {"train": 0.6, "cal": 0.2, "test": 0.2}, seed=2)
+    for s in (a, b):
+        assert (g.assign(split=s.values).groupby("group_id")["split"].nunique() == 1).all()
+        assert set(s) == {"train", "cal", "test"}
+    assert (a.values != b.values).any()
+    assert abs((a == "train").mean() - 0.6) < 0.2
