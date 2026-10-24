@@ -13,6 +13,11 @@ dependencies:
   - numpy=2.4.6
   - scipy=1.17.1
   - pytest=9.1.1
+  # build tools for MOFid (built from source under data/raw/mofid_src; cmake must be < 4: Open Babel's CMakeLists uses policies removed in CMake 4)
+  - cmake=3.31.8
+  - make=4.4.1
+  - swig=4.5.1
+  - openjdk=25.0.2
   - pip
   - pip:
       # NVIDIA RTX 4050 laptop GPU, driver supports CUDA 13.1: the default PyPI wheel is the cu130 build (verified: torch.cuda.is_available() = True)

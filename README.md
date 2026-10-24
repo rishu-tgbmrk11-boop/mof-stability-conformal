@@ -57,4 +57,5 @@ notes/             # notes, audit results (stability_inventory.md), archive_week
 - [x] Phase 3: conformal recall guarantee for the stacked filters; empirical coverage check on held-out groups.
 - [x] Phase 4 (done; see `notes/phase4.md`): price of recall, limitations table, paper figures.
 - [x] Independent review (`notes/review.md`) and Phase 5 (done; see `notes/phase5.md`): CSV-split retrain against the SI, claim corrections, leave-clusters-out validation, sensitivity of the 17, group-vs-random ranges over many splits.
+- [x] Phase 6 (done; see `notes/phase6.md`): thermal-gap diagnosis against the SI, joint cascade score with CV+/jackknife+ calibration, MOFid (built from source) and fingerprint groups.
 - **Status of the guarantee (read before quoting it):** the per-stage split-conformal recall rule gives mean recall >= 1 - alpha only if calibration and deployment MOFs are exchangeable; under leave-clusters-out shift it fell short (`notes/phase5.md` section 3), and the distance-aware variant tried did not fix that. The stacked (union-bound) guarantee for MOFs stable at all three stages is an assumption, **not proved**.
