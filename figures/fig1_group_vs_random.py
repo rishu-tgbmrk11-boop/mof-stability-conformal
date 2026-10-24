@@ -1,35 +1,33 @@
-"""Fig 1: group-aware vs random split (Phase 2 baselines, seed 0, 95% bootstrap intervals: over groups for group-aware, over MOFs for random)."""
+"""Fig 1: group-aware vs random split, as RANGES over many splits (Phase 5 section 5). Median with the 2.5-97.5% range over splits.
+Random forest, N = 100 splits (filled markers); released networks (fixed restore, thermal and solvent) + released forest (water), N = 10 splits (open markers).
+Each split seed gives one random-group split and one MOF-level random split (60/20/20); test parts are about 20% of MOFs and differ between splits."""
 import sys
 sys.path.insert(0, "figures")
 from common import *
+import pandas as pd
 
-M = load(P2 + "metrics.json")["metrics"]
-PANELS = [("AUC, 'truly stable'", [("thermal", "AUC_stable"), ("solvent", "AUC"), ("water", "AUC_stable")], (0.5, 0.9)),
-          ("Accuracy of stable call", [("thermal", "acc_stable_at_350"), ("solvent", "accuracy"), ("water", "acc_stable_argmax_ge2")], (0.5, 0.8)),
-          ("MAE (°C)", [("thermal", "MAE_degC")], None)]
+RF, NN = pd.read_parquet(P5 + "split_ranges_rf.parquet"), pd.read_parquet(P5 + "split_ranges_nn.parquet")
+PANELS = [("AUC, 'truly stable'", "auc_stable", ("thermal", "solvent", "water"), (0.4, 0.95)),
+          ("Accuracy of stable call", "accuracy_stable", ("thermal", "solvent", "water"), (0.45, 0.85)),
+          ("MAE (°C)", "mae_degC", ("thermal",), None)]
+SPEC = [(RF, "random", -0.27, GREY, "s", True), (RF, "group", -0.09, ORANGE, "o", True), (NN, "random", 0.09, GREY, "s", False), (NN, "group", 0.27, ORANGE, "o", False)]
 
 
 def draw(variant):
-    if variant == "2col":
-        fig, axes = panels(variant, 3, h2=2.4, ratios=[3, 3, 1.3])
-        leg_ax = None
-    else:                                                       # 2 x 2 grid; the fourth cell holds the legend
-        fig, grid = plt.subplots(2, 2, figsize=(W1, 5.2 * CM + 1.2), layout="constrained")
-        axes = [grid[0, 0], grid[0, 1], grid[1, 0]]; leg_ax = grid[1, 1]; leg_ax.axis("off")
-    for ax, (title, items, lim) in zip(axes, PANELS):
-        for j, (t, k) in enumerate(items):
-            for mode, off, col, mk in (("random", -0.14, GREY, "s"), ("group", 0.14, ORANGE, "o")):
-                v = M[f"{mode}_{t}"]["seed0_ci"][k]
-                ax.errorbar(j + off, v[0], yerr=[[v[0] - v[1]], [v[2] - v[0]]], fmt=mk, color=col, ms=3.8, capsize=1.8, lw=0.9,
-                            label=("random split (MOF-level)" if mode == "random" else "group-aware split") if j == 0 else None)
-        ax.set_xticks(range(len(items))); ax.set_xticklabels([TITLE[t].split()[0] for t, _ in items]); ax.set_title(title); ax.set_xlim(-0.55, len(items) - 0.45)
+    fig, axes = panels(variant, 3, h2=2.5, h1=2.0, ratios=[3, 3, 1.3] if variant == "2col" else None)
+    for ax, (title, key, stages, lim) in zip(axes, PANELS):
+        for j, t in enumerate(stages):
+            for df, mode, off, col, mk, filled in SPEC:
+                v = df[(df.stage == t) & (df["mode"] == mode)][key].dropna()
+                med, lo, hi = v.median(), v.quantile(0.025), v.quantile(0.975)
+                ax.errorbar(j + off, med, yerr=[[med - lo], [hi - med]], fmt=mk, color=col, mfc=col if filled else "white", mec=col, ms=3.6, capsize=1.6, lw=0.9 if filled else 0.7, zorder=3 if filled else 2)
+        ax.set_xticks(range(len(stages))); ax.set_xticklabels([TITLE[t].split()[0] for t in stages]); ax.set_title(title); ax.set_xlim(-0.6, len(stages) - 0.4)
         if lim: ax.set_ylim(*lim)
     letters(axes)
-    h, l = axes[0].get_legend_handles_labels()
-    if leg_ax is not None:
-        leg_ax.legend(h, l, frameon=False, loc="center", ncol=1)
-    else:
-        fig.legend(h, l, frameon=False, loc="outside lower center", ncol=2)
+    from matplotlib.lines import Line2D
+    h = [Line2D([], [], marker="s", color=GREY, ms=4, lw=0, label="random split (MOF-level)"), Line2D([], [], marker="o", color=ORANGE, ms=4, lw=0, label="group-aware split"),
+         Line2D([], [], marker="o", color="#555", mfc="#555", ms=4, lw=0, label=f"random forest, {RF.split_seed.nunique()} splits"), Line2D([], [], marker="o", color="#555", mfc="white", ms=4, lw=0, label=f"released networks / forest, {NN.split_seed.nunique()} splits")]
+    fig.legend(handles=h, frameon=False, loc="outside lower center", ncol=2 if variant == "2col" else 1)
     save(fig, "fig1_group_vs_random", variant)
 
 
