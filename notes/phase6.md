@@ -104,6 +104,24 @@ The union-bound version here is the same cross-conformal rule applied to each st
 
 **Reading.** (i) Realised recall is above the guaranteed 1 - 2 alpha at every alpha, as expected for a bound that is loose by construction (the 2 alpha factor); at alpha = 0.10 the joint rule has recall 0.961 against a guarantee of 0.80. (ii) At the same alpha the joint score keeps clearly fewer MOFs than the union bound (alpha = 0.10: 0.804 vs 0.891 of the 92) at a somewhat lower, still above-guarantee, recall (0.961 vs 1.000); the union bound spends recall it is not asked for. (iii) Neither rule filters much at a high target: the smallest-alpha rows keep 93-95% of the 92 MOFs, as expected with so few positives. (iv) The kept fraction among MOFs that are not stable at all three stages ('false pass') is high for both rules (0.78 vs 0.88 at alpha = 0.10): with this much calibration noise and weak stage models (group-aware AUC 0.6-0.8) the cascade removes only a modest share of the unstable MOFs. (v) These are 17 MOFs; the data are consistent with the guarantee, but with 17 distinct MOFs (14 groups) and three repetitions of the same MOFs they have little power to contradict it.
 
+### 2b. Calibrating at the group level (the 14 groups as units, not the 17 MOFs)
+
+The 17 all-stable MOFs lie in 14 groups, so 17 overstates the number of independent calibration units. Here each group of all-stable MOFs is **one calibration unit**: its calibration score is the **minimum** of the joint scores of its positives (primary: the lowest score can only keep more MOFs, so this is the conservative choice for recall) or their **mean** (sensitivity); each group is its own fold, so n = number of groups (14 for all 17 positives; 10-14 in the nested folds), and the rule is p(x) = (1 + #{groups g : c_g <= c^(g)(x)}) / (n + 1), keep iff p > alpha. Same nested evaluation as section 2 (the run was repeated to store the group-level p-values; its MOF-level p-values reproduce the first run exactly: True). Both variants were fixed before looking at results.
+
+**Supportable targets.** With 14 units the smallest non-trivial alpha is 1/15 = 0.0667, so the jackknife+ guarantee 1 - 2 alpha can certify at most **0.867** (the MOF-level count of 17 gives 0.889). In the nested folds the pool has as few as 10 groups (smallest non-trivial alpha 0.067 to 0.091), so the first rows are partly trivial.
+
+| alpha | guaranteed recall 1 - 2 alpha | MOF-level (17): recall, kept | group-level min: recall (passes) [95% CP] | kept of 92 | false pass of 75 | group-level mean: recall, kept |
+|---|---|---|---|---|---|---|
+| 0.0667 | 0.867 | 0.961, 0.819 | 1.000 (51/51) [0.93, 1.00] | 0.953 | 0.942 | 1.000, 0.942 |
+| 0.0750 | 0.850 | 0.961, 0.812 | 1.000 (51/51) [0.93, 1.00] | 0.870 | 0.840 | 1.000, 0.855 |
+| 0.1000 | 0.800 | 0.961, 0.804 | 0.961 (49/51) [0.87, 1.00] | 0.804 | 0.769 | 0.961, 0.772 |
+| 0.1500 | 0.700 | 0.922, 0.707 | 0.961 (49/51) [0.87, 1.00] | 0.721 | 0.667 | 0.961, 0.670 |
+| 0.2000 | 0.600 | 0.902, 0.616 | 0.922 (47/51) [0.81, 0.98] | 0.634 | 0.569 | 0.902, 0.580 |
+| 0.2500 | 0.500 | 0.882, 0.540 | 0.902 (46/51) [0.79, 0.97] | 0.587 | 0.516 | 0.863, 0.536 |
+| 0.3000 | 0.400 | 0.863, 0.507 | 0.863 (44/51) [0.74, 0.94] | 0.522 | 0.444 | 0.804, 0.489 |
+
+**Reading.** (i) Counting groups instead of MOFs lowers the largest certifiable target from 0.889 to 0.867. The group-level (minimum) rule keeps at least as many of the 92 MOFs as the MOF-level rule at the listed alphas (more at 6 of 7, equal at 1, fewer at 0; e.g. 0.953 vs 0.819 at alpha = 1/15 and 0.721 vs 0.707 at alpha = 0.15, identical at alpha = 0.10), and its recall is equal or higher, so it is the more conservative rule where the two differ; the differences are up to 12 of the 92 MOFs (at the smallest alpha) and 5 or fewer at the others (the evaluation has 92 MOFs and 51 positive evaluations). (ii) The group-level guarantee is the more defensible statement, because the positives within a group are not independent; the price is a coarser threshold (14 order statistics instead of 17) and a lower ceiling on the certifiable recall. (iii) The mean-of-group variant keeps fewer MOFs than the minimum variant (e.g. 0.772 vs 0.804 at alpha = 0.10), with equal or lower recall, and is not covered by the same conservativeness argument. (iv) As in section 2, recall is above 1 - 2 alpha at every alpha, 17 MOFs / 14 groups give little power to contradict the guarantee, and the repetitions share the same MOFs.
+
 ## 3. MOFid groups (and the fingerprint fallback)
 
 ### 3.0 Premise check, approvals, what was installed

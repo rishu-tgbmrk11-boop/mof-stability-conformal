@@ -124,6 +124,30 @@ w()
 j10, u10 = J.p_joint > 0.10, (J.p_thermal > 0.10 / 3) & (J.p_solvent > 0.10 / 3) & (J.p_water > 0.10 / 3)
 w(f"**Reading.** (i) Realised recall is above the guaranteed 1 - 2 alpha at every alpha, as expected for a bound that is loose by construction (the 2 alpha factor); at alpha = 0.10 the joint rule has recall {(j10 & J.all_stable).sum() / J.all_stable.sum():.3f} against a guarantee of 0.80. (ii) At the same alpha the joint score keeps clearly fewer MOFs than the union bound (alpha = 0.10: {j10.mean():.3f} vs {u10.mean():.3f} of the 92) at a somewhat lower, still above-guarantee, recall ({(j10 & J.all_stable).sum() / J.all_stable.sum():.3f} vs {(u10 & J.all_stable).sum() / J.all_stable.sum():.3f}); the union bound spends recall it is not asked for. (iii) Neither rule filters much at a high target: the smallest-alpha rows keep 93-95% of the 92 MOFs, as expected with so few positives. (iv) The kept fraction among MOFs that are not stable at all three stages ('false pass') is high for both rules (0.78 vs 0.88 at alpha = 0.10): with this much calibration noise and weak stage models (group-aware AUC 0.6-0.8) the cascade removes only a modest share of the unstable MOFs. (v) These are 17 MOFs; the data are consistent with the guarantee, but with 17 distinct MOFs (14 groups) and three repetitions of the same MOFs they have little power to contradict it.")
 w()
+# ---------------------------------------------------------------- 2b
+JG = pd.read_parquet(D + "joint_cascade_group_pvalues.parquet")
+JF = pd.read_parquet(D + "joint_cascade_pvalues_first_run.parquet")
+same = bool(np.allclose(JG.sort_values(["rep", "name"]).p_joint.values, JF.sort_values(["rep", "name"]).p_joint.values))
+w("### 2b. Calibrating at the group level (the 14 groups as units, not the 17 MOFs)")
+w()
+w(f"The 17 all-stable MOFs lie in 14 groups, so 17 overstates the number of independent calibration units. Here each group of all-stable MOFs is **one calibration unit**: its calibration score is the **minimum** of the joint scores of its positives (primary: the lowest score can only keep more MOFs, so this is the conservative choice for recall) or their **mean** (sensitivity); each group is its own fold, so n = number of groups (14 for all 17 positives; {int(JG.n_cal_groups.min())}-{int(JG.n_cal_groups.max())} in the nested folds), and the rule is p(x) = (1 + #{{groups g : c_g <= c^(g)(x)}}) / (n + 1), keep iff p > alpha. Same nested evaluation as section 2 (the run was repeated to store the group-level p-values; its MOF-level p-values reproduce the first run exactly: {same}). Both variants were fixed before looking at results.")
+w()
+w("**Supportable targets.** With 14 units the smallest non-trivial alpha is 1/15 = 0.0667, so the jackknife+ guarantee 1 - 2 alpha can certify at most **0.867** (the MOF-level count of 17 gives 0.889). In the nested folds the pool has as few as " + f"{int(JG.n_cal_groups.min())} groups (smallest non-trivial alpha {1 / (JG.n_cal_groups.max() + 1):.3f} to {1 / (JG.n_cal_groups.min() + 1):.3f}), so the first rows are partly trivial.")
+w()
+w("| alpha | guaranteed recall 1 - 2 alpha | MOF-level (17): recall, kept | group-level min: recall (passes) [95% CP] | kept of 92 | false pass of 75 | group-level mean: recall, kept |")
+w("|---|---|---|---|---|---|---|")
+pos = JG.all_stable; npos = int(pos.sum())
+for a in (1 / 15, 0.075, 0.10, 0.15, 0.20, 0.25, 0.30):
+    km, kn, k17 = JG.p_group_min > a, JG.p_group_mean > a, JG.p_joint > a
+    kp = int((km & pos).sum()); lo, hi = cp(kp, npos)
+    w(f"| {a:.4f} | {1 - 2 * a:.3f} | {(k17 & pos).sum() / npos:.3f}, {k17.mean():.3f} | {kp / npos:.3f} ({kp}/{npos}) [{lo:.2f}, {hi:.2f}] | {km.mean():.3f} | {km[~pos].mean():.3f} | {(kn & pos).sum() / npos:.3f}, {kn.mean():.3f} |")
+w()
+a10 = 0.10
+_al = (1 / 15, 0.075, 0.10, 0.15, 0.20, 0.25, 0.30)
+_kg = [(JG.p_group_min > a).mean() for a in _al]; _km = [(JG.p_joint > a).mean() for a in _al]
+_more = sum(g > m + 1e-12 for g, m in zip(_kg, _km)); _eq = sum(abs(g - m) < 1e-12 for g, m in zip(_kg, _km)); _less = sum(g < m - 1e-12 for g, m in zip(_kg, _km))
+w(f"**Reading.** (i) Counting groups instead of MOFs lowers the largest certifiable target from 0.889 to 0.867. The group-level (minimum) rule keeps at least as many of the 92 MOFs as the MOF-level rule at the listed alphas (more at {_more} of {len(_al)}, equal at {_eq}, fewer at {_less}; e.g. {_kg[0]:.3f} vs {(JG.p_joint > _al[0]).mean():.3f} at alpha = 1/15 and {_kg[3]:.3f} vs {_km[3]:.3f} at alpha = 0.15, identical at alpha = 0.10), and its recall is equal or higher, so it is the more conservative rule where the two differ; the differences are up to {round(92 * max(abs(g - m) for g, m in zip(_kg, _km)))} of the 92 MOFs (at the smallest alpha) and {round(92 * max(abs(g - m) for g, m in zip(_kg[1:], _km[1:])))} or fewer at the others (the evaluation has 92 MOFs and 51 positive evaluations). (ii) The group-level guarantee is the more defensible statement, because the positives within a group are not independent; the price is a coarser threshold (14 order statistics instead of 17) and a lower ceiling on the certifiable recall. (iii) The mean-of-group variant keeps fewer MOFs than the minimum variant (e.g. {(JG.p_group_mean > 0.10).mean():.3f} vs {(JG.p_group_min > 0.10).mean():.3f} at alpha = 0.10), with equal or lower recall, and is not covered by the same conservativeness argument. (iv) As in section 2, recall is above 1 - 2 alpha at every alpha, 17 MOFs / 14 groups give little power to contradict the guarantee, and the repetitions share the same MOFs.")
+w()
 # ---------------------------------------------------------------- 3
 w("## 3. MOFid groups (and the fingerprint fallback)")
 w()
