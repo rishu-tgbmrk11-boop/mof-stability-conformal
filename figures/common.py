@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 
 P2, P3, P4 = "data/processed/phase2/", "data/processed/phase3/", "data/processed/phase4/"
 P5 = "data/processed/phase5/"
+P6 = "data/processed/phase6/"
 TASKS = ("thermal", "solvent", "water")
 TITLE = {"thermal": "Thermal stage", "solvent": "Solvent stage", "water": "Water stage"}
 # Okabe-Ito colour-blind-safe colours; every series also differs in marker / line style
